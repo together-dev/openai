@@ -609,6 +609,65 @@ abstract class OpenAINetworkingClient {
     }
   }
 
+  static Future<T> fileUploadFromBytes<T>({
+    required String to,
+    required T Function(Map<String, dynamic>) onSuccess,
+    required Map<String, String> body,
+    required List<int> bytes,
+    Map<String, dynamic> Function(String rawResponse)? responseMapAdapter,
+  }) async {
+    OpenAILogger.logStartRequest(to);
+
+    final uri = Uri.parse(to);
+    final headers = HeadersBuilder.build();
+
+    final httpMethod = OpenAIStrings.postMethod;
+    final request = http.MultipartRequest(httpMethod, uri);
+
+    request.headers.addAll(headers);
+
+    final multiPartFile = await http.MultipartFile.fromBytes("file", bytes);
+
+    request.files.add(multiPartFile);
+    request.fields.addAll(body);
+
+    final http.StreamedResponse response =
+    await request.send().timeout(OpenAIConfig.requestsTimeOut);
+
+    OpenAILogger.logResponseBody(response);
+
+    OpenAILogger.requestToWithStatusCode(to, response.statusCode);
+
+    OpenAILogger.startingDecoding();
+
+    final String responseBody = await response.stream.bytesToString();
+
+    var resultBody;
+
+    resultBody = responseBody.canBeParsedToJson
+        ? decodeToMap(responseBody)
+        : responseMapAdapter != null
+        ? responseMapAdapter(responseBody)
+        : responseBody;
+
+    OpenAILogger.decodedSuccessfully();
+    if (doesErrorExists(resultBody)) {
+      final Map<String, dynamic> error =
+      resultBody[OpenAIStrings.errorFieldKey];
+      final message = error[OpenAIStrings.messageFieldKey];
+      final statusCode = response.statusCode;
+
+      final exception = RequestFailedException(message, statusCode);
+      OpenAILogger.errorOcurred(exception);
+
+      throw exception;
+    } else {
+      OpenAILogger.requestFinishedSuccessfully();
+
+      return onSuccess(resultBody);
+    }
+  }
+
   static Future<T> delete<T>({
     required String from,
     required T Function(Map<String, dynamic> response) onSuccess,

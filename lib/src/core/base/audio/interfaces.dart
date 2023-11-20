@@ -22,6 +22,15 @@ abstract class CreateInterface {
     String? language,
   });
 
+  Future<OpenAIAudioModel> createTranscriptionFromBytes({
+    required List<int> bytes,
+    required String model,
+    String? prompt,
+    OpenAIAudioResponseFormat? responseFormat,
+    double? temperature,
+    String? language,
+  });
+
   Future<OpenAIAudioModel> createTranslation({
     required File file,
     required String model,
