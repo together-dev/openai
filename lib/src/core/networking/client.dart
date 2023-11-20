@@ -642,13 +642,13 @@ abstract class OpenAINetworkingClient {
 
     final http.StreamedResponse response = await request.send().timeout(OpenAIConfig.requestsTimeOut);
 
-    OpenAILogger.logResponseBody(response);
+    final String responseBody = await response.stream.bytesToString();
+
+    // OpenAILogger.logResponseBody(response);
 
     OpenAILogger.requestToWithStatusCode(to, response.statusCode);
 
     OpenAILogger.startingDecoding();
-
-    final String responseBody = await response.stream.bytesToString();
 
     var resultBody;
 
