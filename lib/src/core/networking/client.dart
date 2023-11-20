@@ -619,20 +619,28 @@ abstract class OpenAINetworkingClient {
     OpenAILogger.logStartRequest(to);
 
     final uri = Uri.parse(to);
-    final headers = HeadersBuilder.build();
+    final headers = HeadersBuilder.build()
+      ..addAll(
+        {
+          'Content-Type': 'multipart/form-data',
+        },
+      );
 
     final httpMethod = OpenAIStrings.postMethod;
     final request = http.MultipartRequest(httpMethod, uri);
 
     request.headers.addAll(headers);
 
-    final multiPartFile = await http.MultipartFile.fromBytes("file", bytes);
+    final multiPartFile = await http.MultipartFile.fromBytes(
+      "file",
+      bytes,
+      filename: 'file.wav',
+    );
 
     request.files.add(multiPartFile);
     request.fields.addAll(body);
 
-    final http.StreamedResponse response =
-    await request.send().timeout(OpenAIConfig.requestsTimeOut);
+    final http.StreamedResponse response = await request.send().timeout(OpenAIConfig.requestsTimeOut);
 
     OpenAILogger.logResponseBody(response);
 
@@ -652,8 +660,7 @@ abstract class OpenAINetworkingClient {
 
     OpenAILogger.decodedSuccessfully();
     if (doesErrorExists(resultBody)) {
-      final Map<String, dynamic> error =
-      resultBody[OpenAIStrings.errorFieldKey];
+      final Map<String, dynamic> error = resultBody[OpenAIStrings.errorFieldKey];
       final message = error[OpenAIStrings.messageFieldKey];
       final statusCode = response.statusCode;
 
