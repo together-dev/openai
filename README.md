@@ -325,7 +325,6 @@ OpenAIChatCompletionModel chatCompletion = await OpenAI.instance.chat.create(
   messages: requestMessages,
   temperature: 0.2,
   maxTokens: 500,
-  toolChoice: "auto",
 );
 
 print(chatCompletion.choices.first.message); // ...
@@ -425,7 +424,7 @@ final chat = await OpenAI.instance.chat.create(
 final message = chat.choices.first.message;
 
 // Wether the message has a tool call.
-  if (message.hasToolCalls) {
+  if (message.haveToolCalls) {
   final call = message.toolCalls!.first;
 
     // Wether the tool call is the one we sent.

@@ -9,6 +9,9 @@ import '../constants/strings.dart';
 @immutable
 @internal
 abstract final class OpenAILogger {
+  /// The valid min length of an api key.
+  static const int _kValidApiKeyLength = 10;
+
   /// {@template openai_logger_is_active}
   /// Wether the to show operations flow logger is active or not.
   /// {@endtemplate}
@@ -53,15 +56,13 @@ abstract final class OpenAILogger {
   }
 
   /// Logs the response of a request, if the logger is active.
-  static Future<void> logResponseBody(response) async {
+  static void logResponseBody(response) {
     if (_isActive && _showResponsesLogs) {
       if (response is Response) {
         dev.log(response.body.toString(), name: OpenAIStrings.openai);
-      } else if (response is StreamedResponse) {
-        final asString = await response.stream.bytesToString();
-
+      } else {
         dev.log(
-          asString,
+          response.toString(),
           name: OpenAIStrings.openai,
         );
       }
@@ -87,7 +88,7 @@ abstract final class OpenAILogger {
   static isValidApiKey(String key) {
     return key.isNotEmpty &&
         key.startsWith("sk-") &&
-        key.length > 10; //magic number
+        key.length > _kValidApiKeyLength;
   }
 
   /// Logs that an baseUrl key is being set, if the logger is active.

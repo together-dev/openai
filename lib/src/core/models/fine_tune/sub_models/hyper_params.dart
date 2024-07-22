@@ -17,6 +17,18 @@ final class OpenAIFineTuneHyperParamsModel {
   /// The prompt loss weight used for fine-tuning.
   final double? promptLossWeight;
 
+  /// Weither the hyper-parameters have a batch size.
+  bool get haveBatchSize => batchSize != null;
+
+  /// Weither the hyper-parameters have a learning rate multiplier.
+  bool get haveLearningRateMultiplier => learningRateMultiplier != null;
+
+  /// Weither the hyper-parameters have a number of epochs.
+  bool get haveNEpochs => nEpochs != null;
+
+  /// Weither the hyper-parameters have a prompt loss weight.
+  bool get havePromptLossWeight => promptLossWeight != null;
+
   @override
   int get hashCode {
     return batchSize.hashCode ^
@@ -25,7 +37,7 @@ final class OpenAIFineTuneHyperParamsModel {
         promptLossWeight.hashCode;
   }
 
-  /// {@template openai_fine_tune_hyper_params_model}
+  /// {@macro openai_fine_tune_hyper_params_model}
   const OpenAIFineTuneHyperParamsModel({
     required this.batchSize,
     required this.learningRateMultiplier,
@@ -33,8 +45,9 @@ final class OpenAIFineTuneHyperParamsModel {
     required this.promptLossWeight,
   });
 
-  /// {@template openai_fine_tune_hyper_params_model}
+  /// {@template openai_fine_tune_hyper_params_model_fromMap}
   /// This method is used to convert a [Map<String, dynamic>] object to a [OpenAIFineTuneHyperParamsModel] object.
+  /// {@endtemplate}
   factory OpenAIFineTuneHyperParamsModel.fromMap(Map<String, dynamic> json) {
     return OpenAIFineTuneHyperParamsModel(
       batchSize: json['batch_size'],

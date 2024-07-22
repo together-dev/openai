@@ -1,3 +1,4 @@
+import 'sub_models/log_probs/log_probs.dart';
 import 'sub_models/message.dart';
 
 /// {@template openai_chat_completion_choice}
@@ -5,6 +6,8 @@ import 'sub_models/message.dart';
 /// {@endtemplate}
 final class OpenAIChatCompletionChoiceModel {
   /// The [index] of the choice.
+
+  //! This is dynamic because the API sometimes returns a [String] and sometimes an [int].
   final index;
 
   /// The [message] of the choice.
@@ -12,6 +15,12 @@ final class OpenAIChatCompletionChoiceModel {
 
   /// The [finishReason] of the choice.
   final String? finishReason;
+
+  /// The log probability of the choice.
+  final OpenAIChatCompletionChoiceLogProbsModel? logprobs;
+
+  /// Weither the choice have a finish reason.
+  bool get haveFinishReason => finishReason != null;
 
   @override
   int get hashCode {
@@ -23,16 +32,21 @@ final class OpenAIChatCompletionChoiceModel {
     required this.index,
     required this.message,
     required this.finishReason,
+    required this.logprobs,
   });
 
   /// This is used  to convert a [Map<String, dynamic>] object to a [OpenAIChatCompletionChoiceModel] object.
   factory OpenAIChatCompletionChoiceModel.fromMap(Map<String, dynamic> json) {
     return OpenAIChatCompletionChoiceModel(
+//! Here we use the [int.tryParse] method to convert the [String] to an [int] if it's possible, otherwise we use the [String] value.
       index: json['index'] is int
           ? json['index']
           : int.tryParse(json['index'].toString()) ?? json['index'],
       message: OpenAIChatCompletionChoiceMessageModel.fromMap(json['message']),
       finishReason: json['finish_reason'],
+      logprobs: json['logprobs'] != null
+          ? OpenAIChatCompletionChoiceLogProbsModel.fromMap(json['logprobs'])
+          : null,
     );
   }
 
@@ -42,6 +56,7 @@ final class OpenAIChatCompletionChoiceModel {
       "index": index,
       "message": message.toMap(),
       "finish_reason": finishReason,
+      "logprobs": logprobs?.toMap(),
     };
   }
 

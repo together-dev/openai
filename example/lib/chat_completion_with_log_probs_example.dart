@@ -20,11 +20,6 @@ void main() async {
       OpenAIChatCompletionChoiceMessageContentItemModel.text(
         "Hello, I am a chatbot created by OpenAI. How are you today?",
       ),
-
-      //! image url contents are allowed only for models with image support
-      // OpenAIChatCompletionChoiceMessageContentItemModel.imageUrl(
-      //   "https://placehold.co/600x400",
-      // ),
     ],
     role: OpenAIChatMessageRole.user,
     name: "anas",
@@ -42,15 +37,9 @@ void main() async {
     messages: requestMessages,
     temperature: 0.2,
     maxTokens: 500,
-
-    // uncomment and set your own properties if you want to use tool choices feature..
-
-    // toolChoice: "auto",
-    // tools: [],
+    logprobs: true,
+    topLogprobs: 2,
   );
 
-  print(chatCompletion.choices.first.message); //
-  print(chatCompletion.systemFingerprint); //
-  print(chatCompletion.usage.promptTokens); //
-  print(chatCompletion.id); //
+  print(chatCompletion.choices.first.logprobs?.content.first.bytes); //
 }

@@ -1,5 +1,28 @@
 # Changelog
 
+## NEXT
+
+- Support for logprobs in the chat completions API.
+
+- Bug fixes.
+
+## 5.1.0
+
+- Massive issues fixes related to incorrecr use of types, model fields..., audio transcription file streaming error handling, and more.
+
+- Support for newer fields & options for the chat completions API, like `name` for messages.
+
+- Support for audio transcription granularity.
+
+- General improvements, and more tests.
+
+## 5.0.0
+
+- Bug fix in the `RequestFunctionMessage`'s `toMap()` method.
+- Minor changes
+- Add/Improvements to the documentation.
+- Notifications about breaking changes in the chat completions methods in favor of OpenAI Vision feature support, JSON mode..
+
 ## 4.1.4
 
 - Removed the exposed field for configuring the package to use fetch_client instead of http_client manually withe is `isWeb` field, in favor of using `dart.library.js` and `dart.library.io` conditional imports to automatically detect the platform and use the appropriate client for it.
@@ -8,7 +31,7 @@
 ## 4.1.3
 
 - Added Audio Speech method in the Audio module with its docs, example code.
-- Migrated for the deprecated _`functions`_and `function_call` th the use of new fields such `tools`.. in the chat API, confirmed that it works on both asynchronous and stream responses.
+- Migrated for the deprecated \_`functions`\_and `function_call` th the use of new fields such `tools`.. in the chat API, confirmed that it works on both asynchronous and stream responses.
 - Exposed API for controlling the requests time out for all internal client methods.
 - Exposed multi content calls for chat completion API for image and text..
 
@@ -38,7 +61,7 @@
 ## 3.0.0
 
 - Added support for functions feature of the chat API.
-- Bugs fixes.  
+- Bugs fixes.
 
 ## 2.0.1
 
